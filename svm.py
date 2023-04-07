@@ -4,7 +4,7 @@
 
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import numpy
 
@@ -36,4 +36,4 @@ class SVM():
     def export_results(self):
         with open('temp.txt', 'w') as f:
             f.write(
-                f"Classification Report - \n {classification_report(self.y_test, self.y_predicted)} \n Confusion Matrix - \n {confusion_matrix(self.y_test, self.y_predicted)}")
+                f"Classification Report - \n {classification_report(self.y_test, self.y_predicted)} \n Confusion Matrix - \n {confusion_matrix(self.y_test, self.y_predicted)} \n Accuracy - {accuracy_score(self.y_test, self.y_predicted)}")
