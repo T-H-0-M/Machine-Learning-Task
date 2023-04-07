@@ -5,12 +5,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import pandas
+import pandas as pd
 
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix, classification_report
+from torch.autograd import Variable
 
 
 class Train():
@@ -53,7 +54,6 @@ class Train():
             self.x_test = torch.from_numpy(self.x_test).type(torch.float32)
             self.y_train = torch.from_numpy(self.y_train)
             self.y_test = torch.from_numpy(self.y_test)
-
             # Training the NN
             for epoch in range(num_epochs):
                 # Zero gradients
@@ -84,6 +84,13 @@ class Train():
                     print("Epoch {}:\tTrain loss={:.4f}  \tTrain acc={:.2f}  \tTest loss={:.4f}  \tTest acc={:.2f}".format(
                         epoch, loss.item(), train_acc*100, test_loss.item(), test_acc*100))
 
+        avg_train_loss = np.mean(self.train_losses)
+        avg_test_loss = np.mean(self.test_losses)
+        avg_train_acc = np.mean(self.train_accuracies)
+        avg_test_acc = np.mean(self.test_accuracies)
+        print("Average Training Loss: {:.4f} \t Average Test Loss: {:.4f} \t Average Training Acc: {:.3f} \t Average Test Acc: {:.3f}".format(
+            avg_train_loss, avg_test_loss, avg_train_acc, avg_test_acc))
+
     def export_results(self):
         with torch.no_grad():
             y_pred_probs_test = self.model(self.x_test).numpy()
@@ -106,11 +113,29 @@ class Train():
         plt.show()
 
     # def generate_graph(self):
-    #     activation_range = numpy.arange(-7, 7, 0.1)         # TODO fix
-    #     test_coordinates = [(self.x, self.y)
-    #                         for self.y in activation_range for self.x in activation_range]
+    #     color_map = plt.get_cmap(color_map)
+    #     # Define region of interest by data limits
+    #     xmin, xmax = self.x[:, 0].min() - 1, self.x[:, 0].max() + 1
+    #     ymin, ymax = self.y[:, 1].min() - 1, self.y[:, 1].max() + 1
+    #     steps = 1000
+    #     x_span = np.linspace(xmin, xmax, steps)
+    #     y_span = np.linspace(ymin, ymax, steps)
+    #     xx, yy = np.meshgrid(x_span, y_span)
 
-    #     x_, y_ = numpy.meshgrid(activation_range, activation_range)
-    #     plt.scatter(
-    #         x_, y_, c=['g' if x_ > 0 else 'b' for x_ in test_classifications])
+    #     # Make predictions across region of interest
+    #     self.model.eval()
+    #     labels_predicted = self.model(Variable(torch.from_numpy(np.c_[xx.ravel(), yy.ravel()]).float()))
+
+    #     # Plot decision boundary in region of interest
+    #     labels_predicted = [0 if value <= 0.5 else 1 for value in labels_predicted.detach().numpy()]
+    #     z = np.array(labels_predicted).reshape(xx.shape)
+        
+    #     fig, ax = plt.subplots()
+    #     ax.contourf(xx, yy, z, cmap=color_map, alpha=0.5)
+
+    #     # Get predicted labels on training data and plot
+    #     train_labels_predicted = model(dataset)
+    #     ax.scatter(self.x[:, 0], self.x[:, 1], c=labels.reshape(labels.size()[0]), cmap=color_map, lw=0)
     #     plt.show()
+
+
