@@ -1,6 +1,6 @@
-# Packaged with - main.py
+# Packaged with - main.py, neural_network.py, dataset_generation.py, svm.py
 # Author - Thomas Bandy (c3374048)
-# Description:
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,12 +23,12 @@ class Train():
         self.optimiser = Adam(model.parameters(), lr=learn_rate)
 
     def plot_dataset(self):
-        """Plot a dataset with two features and binary classes"""
-        axes = [max(self.x[0]), min(self.x[0]), min(self.x[1]), max(self.x[1])]
-        plt.plot(self.x[0][:, 0][self.x[1] == 0],
-                 self.x[0][:, 1][self.x[1] == 0], "bs")
-        plt.plot(self.x[0][:, 0][self.x[1] == 1],
-                 self.x[0][:, 1][self.x[1] == 1], "g^")
+        """Plot a dataset with two features and binary classes. Adapted from UON COMP3330 Labs Week 3 - 04_svm_two_spiral_dataset"""
+        axes = [20, -20, 20, -20]
+        plt.plot(self.x[:, 0][self.y == 0],
+                 self.x[:, 1][self.y == 0], "bs")
+        plt.plot(self.x[:, 0][self.y == 1],
+                 self.x[:, 1][self.y == 1], "g^")
         plt.axis(axes)
         plt.grid(True, which='both')
         plt.xlabel(r"$x_1$", fontsize=20)
@@ -44,6 +44,7 @@ class Train():
         kfold = KFold(
             n_splits=num_folds, random_state=17, shuffle=True)
 
+        # KFold validation loop. Enumerates the indexs from each fold and returns them
         for i, (train_index, test_index) in enumerate(kfold.split(self.x)):
             print(f"Fold {i}")
             self.x_train, self.x_test = self.x[train_index], self.x[test_index]
@@ -54,19 +55,16 @@ class Train():
             self.x_test = torch.from_numpy(self.x_test).type(torch.float32)
             self.y_train = torch.from_numpy(self.y_train)
             self.y_test = torch.from_numpy(self.y_test)
-            # Training the NN
+
+            # Training the NN adapted from UON COMP3330 Labs Week 4 - Pytorch_banknote_dataset
             for epoch in range(num_epochs):
-                # Zero gradients
                 self.optimiser.zero_grad()
-                # Forward pass
                 y_pred = self.model(self.x_train)
-                # Calculate loss
                 loss = self.loss_fn(y_pred, self.y_train)
-                # Backward pass
                 loss.backward()
-                # Update weights
                 self.optimiser.step()
-                # Calculate metrics
+
+                # Calculation of metrics
                 train_acc = torch.sum(torch.argmax(
                     y_pred, dim=1) == self.y_train) / self.y_train.shape[0]
                 with torch.no_grad():
@@ -80,10 +78,10 @@ class Train():
                 self.test_losses.append(test_loss.item())
                 self.test_accuracies.append(test_acc)
                 if epoch % 10 == 0:
-                    # Print to console
                     print("Epoch {}:\tTrain loss={:.4f}  \tTrain acc={:.2f}  \tTest loss={:.4f}  \tTest acc={:.2f}".format(
                         epoch, loss.item(), train_acc*100, test_loss.item(), test_acc*100))
 
+        # Calculate average metrics across folds
         avg_train_loss = np.mean(self.train_losses)
         avg_test_loss = np.mean(self.test_losses)
         avg_train_acc = np.mean(self.train_accuracies)
@@ -92,6 +90,7 @@ class Train():
             avg_train_loss, avg_test_loss, avg_train_acc, avg_test_acc))
 
     def export_results(self):
+        """Export results of last fold to a temp text file"""
         with torch.no_grad():
             y_pred_probs_test = self.model(self.x_test).numpy()
         y_pred_classes_test = np.argmax(y_pred_probs_test, axis=1)
@@ -100,6 +99,7 @@ class Train():
                 f"Classification Report - \n {classification_report(self.y_test, y_pred_classes_test)} \n Confusion Matrix - \n {confusion_matrix(self.y_test, y_pred_classes_test)}")
 
     def generate_learning_graph(self):
+        """Generates and displays a learning curve graph. Adapted from UON COMP3330 Labs Week 4 - Pytorch_banknote_dataset"""
         fig, (ax1, ax2) = plt.subplots(2, figsize=(12, 8), sharex=True)
         ax1.plot(self.train_losses, color='b', label='train')
         ax1.plot(self.test_losses, color='g', label='test')
@@ -112,6 +112,7 @@ class Train():
         ax2.legend()
         plt.show()
 
+    # Attempt to generate generalisation graph
     # def generate_graph(self):
     #     color_map = plt.get_cmap(color_map)
     #     # Define region of interest by data limits
@@ -129,7 +130,7 @@ class Train():
     #     # Plot decision boundary in region of interest
     #     labels_predicted = [0 if value <= 0.5 else 1 for value in labels_predicted.detach().numpy()]
     #     z = np.array(labels_predicted).reshape(xx.shape)
-        
+
     #     fig, ax = plt.subplots()
     #     ax.contourf(xx, yy, z, cmap=color_map, alpha=0.5)
 
@@ -137,5 +138,3 @@ class Train():
     #     train_labels_predicted = model(dataset)
     #     ax.scatter(self.x[:, 0], self.x[:, 1], c=labels.reshape(labels.size()[0]), cmap=color_map, lw=0)
     #     plt.show()
-
-
