@@ -1,6 +1,5 @@
-# Packaged with -
+# Packaged with - nn_training.py, neural_network.py, dataset_generation.py, svm.py
 # Author - Thomas Bandy (c3374048)
-# Description:
 
 import time
 
@@ -11,37 +10,32 @@ from svm import SVM
 
 start_time = time.time()
 
+# Comment in the model and dataset you wish to use.
 #-----------------------------------------Importing Data-----------------------------------------#
 test = Data_Gen()
-# x, y = test.get_multi_spiral()
+x, y = test.get_multi_spiral()
 # x, y = test.get_two_spiral()
-x, y = test.get_bupa()
-# print(type(y[1]))
-# print(type(x[1][1]))
+# x, y = test.get_bupa()
+
 
 
 
 #-----------------------------------------Two Sprial FFNN-----------------------------------------#
 
-
-model = ANN(input_nodes=5, layers=5, nodes_per_layer=160, output_nodes=2)
-print(model)
-test = Train(x, y, model, learn_rate=0.001)
-test.solve(num_epochs=250, num_folds=10)
-print(f"{time.time()-start_time} seconds")
+# model = ANN(input_nodes=2, layers=4, nodes_per_layer=20, output_nodes=2)
+# print(model)
+# test = Train(x, y, model, learn_rate=0.001)
+# test.solve(num_epochs=100, num_folds=4)
+# print(f"{time.time()-start_time} seconds")
 # test.export_results()
 # test.generate_learning_graph()
 
 
+
 #-----------------------------------------Two Sprial SVM-----------------------------------------#
-# svm = SVM(x, y, kernel="rbf", gamma=8, c=1)
-# svm.split_data(test_size=0.2, random_state=17)
-# svm.solve()
-# # svm.generate_graph()
-# svm. export_results()
-
-#-----------------------------------------Multi Sprial FFNN-----------------------------------------#
-
-
-#-----------------------------------------Multi Sprial SVM-----------------------------------------#
-
+svm = SVM(x, y, kernel="rbf", gamma=4, c=0.5)
+svm.split_data(test_size=0.25, random_state=17)
+svm.solve()
+print(f"{time.time()-start_time} seconds")
+svm. export_results()
+svm.generate_graph()

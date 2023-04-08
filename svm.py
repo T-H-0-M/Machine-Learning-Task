@@ -1,4 +1,4 @@
-# Packaged with - main.py
+# Packaged with - nn_training.py, neural_network.py, dataset_generation.py, svm.py
 # Author - Thomas Bandy (c3374048)
 # Description:
 
