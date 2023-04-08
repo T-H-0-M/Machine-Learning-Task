@@ -5,13 +5,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import pandas as pd
 
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix, classification_report
-from torch.autograd import Variable
 
 
 class Train():
