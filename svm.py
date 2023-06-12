@@ -1,6 +1,5 @@
 # Packaged with - nn_training.py, neural_network.py, dataset_generation.py, svm.py
-# Author - Thomas Bandy (c3374048)
-# Description:
+# Author - Thomas Bandy
 
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC

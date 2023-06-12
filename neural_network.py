@@ -1,5 +1,5 @@
 # Packaged with - main.py, dataset_generation.py, nn_training.py, svm.py
-# Author - Thomas Bandy (c3374048)
+# Author - Thomas Bandy
 
 from torch.nn import Module, Linear, Softmax, ReLU, ParameterList, Sigmoid, CELU
 

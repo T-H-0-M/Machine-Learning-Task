@@ -1,6 +1,5 @@
 # Packaged with - main.py, neural_network.py, nn_training.py, svm.py
-# Author - Thomas Bandy (c3374048)
-
+# Author - Thomas Bandy 
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,27 +40,3 @@ class Data_Gen():
         y = y.astype(np.int64)
         return [x_norm, y]
 
-
-# This is an attempt to create a function that creates a new spiral dataset with N points and n spirals.
-# Adapted from: https://gist.github.com/45deg/e731d9e7f478de134def5668324c44c5
-
-# def generate_multispiral(self, num_spirals, num_points):
-
-#     theta = np.sqrt(np.random.rand(num_points)) * \
-#         2*pi  # np.linspace(0,2*pi,100)
-#     res_list = []
-
-#     for i in range(num_spirals):
-#         r = 2*theta + pi
-#         data = np.array([np.cos(theta)*r, np.sin(theta)*r]).T
-#         x = (data + np.random.randn(num_points, 2))
-#         res_list.append(np.append(x, np.full((num_points, 1), i), axis=1))
-
-#     res = np.append(res_list[0], res_list[1])
-
-#     for i in range(num_spirals - 2):
-#         res = np.append(res, res_list[i+2], axis=0)
-
-#     np.random.shuffle(res)
-#     np.savetxt("test.csv", res, delimiter=",",
-#                header="x,y,label", comments="", fmt='%.5f')
